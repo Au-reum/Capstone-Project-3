@@ -1,0 +1,83 @@
+
+<%- include("partials/header.ejs") %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+    <link rel="stylesheet" href="/styles/main.css"> <!-- Link to your CSS for styling -->
+</head>
+<body>
+
+  <% if (page === 'home') { %>
+    <!-- Home page view: List all posts -->
+    <h1>Blog Posts</h1>
+    <div class="first">
+    <a href="/new-post" class="button">Create New Post</a>
+    
+    <ul>
+        <% if (posts.length === 0) { %>
+            <p>No posts yet. Create the first one!</p>
+        <% } %>
+        <% posts.forEach((post, index) => { %>
+            <li>
+                <h2><%= post.title %></h2>
+                <p><%= post.content.length > 100 ? post.content.substring(0, 100) + '...' : post.content %></p>
+                <!-- Edit and Delete buttons -->
+                <a href="/post/<%= index %>" class="button">Read More</a>
+                <a href="/post/<%= index %>/edit" class="button">Edit</a>
+                <form action="/post/<%= index %>/delete" method="POST" style="display:inline;">
+                    <button type="submit" class="button-delete">Delete</button>
+                </form>
+            </li>
+        <% }) %>
+    </ul>
+  </div>
+
+<% } else if (page === 'new-post') { %>
+    <!-- New post form view -->
+  <div class="second">
+    <h1>Create a New Post</h1>
+    <form action="/submit" method="POST">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+        <label for="content">Content:</label>
+        <textarea id="content" name="content" rows="4" required></textarea>
+        <button type="submit">Submit Post</button>
+    </form>
+    <a href="/">Back to Home</a>
+  </div>
+
+<% } else if (page === 'edit-post') { %>
+    <!-- Edit post form view -->
+  <div class="third">
+    <h1>Edit Post</h1>
+    <form action="/post/<%= postId %>/edit" method="POST">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" value="<%= post.title %>" required>
+        <label for="content">Content:</label>
+        <textarea id="content" name="content" rows="4" required><%= post.content %></textarea>
+        <button type="submit">Update Post</button>
+    </form>
+    <a href="/">Back to Home</a>
+  </div>
+
+ <% } else if (page === 'view-post') { %>
+        <!-- Full post view -->
+      <div class="fourth">
+        <h1><%= post.title %></h1>
+        <p><%= post.content %></p>
+        <a href="/">Back to Home</a>
+        <a href="/post/<%= postId %>/edit" class="button">Edit</a>
+        <form action="/post/<%= postId %>/delete" method="POST" style="display:inline;">
+            <button type="submit" class="button-delete">Delete</button>
+        </form>
+      </div>
+      <% } %>
+
+</body>
+</html>
+
+  <%- include("partials/footer.ejs") %>
